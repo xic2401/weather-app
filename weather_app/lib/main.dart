@@ -7,6 +7,7 @@ import 'screens/info_screen.dart';
 void main() {
   runApp(MyApp());
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -38,9 +39,6 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Currency Converter'),
-      ),
       body: IndexedStack(
         index: _selectedIndex,
         children: [
@@ -57,8 +55,8 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
             label: 'Converter',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.info),
-            label: 'Info',
+            icon: Icon(Icons.cloud),
+            label: 'Weather',
           ),
         ],
       ),
@@ -66,13 +64,13 @@ class _CurrencyConverterScreenState extends State<CurrencyConverterScreen> {
   }
 }
 
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Погода',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: WeatherScreen(),
-    );
-  }
+Widget build(BuildContext context) {
+  return MaterialApp(
+    title: 'Погода',
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+    ),
+    home: WeatherScreen(),
+  );
+}

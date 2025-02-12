@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/models/currency.dart';
 import 'package:weather_app/services/services_currency.dart';
+import 'package:flutter/services.dart';
 
 class ConverterScreen extends StatefulWidget {
   const ConverterScreen({super.key});
@@ -10,62 +12,121 @@ class ConverterScreen extends StatefulWidget {
 
 class ConverterScreenState extends State<ConverterScreen> {
   final TextEditingController amountController = TextEditingController();
-  final List<String> currencies = ['USD', 'EUR', 'KZT'];
-  String? choosedCurrency;
+  List<Currency> currencies = [];
+  double kgsRate = 0;
+  Currency? choosedCurrency;
 
   @override
   void initState() {
     super.initState();
+    amountController.text = '100';
     asyncInit();
   }
 
   @override
   void dispose() {
+    amountController.dispose();
     super.dispose();
   }
 
   Future asyncInit() async {
-    
-    final result = fetchCurrencyRates();
-    print(result);
+    List<Currency> result = await fetchCurrencyRates();
+    setState(() {
+      currencies = result;
+      kgsRate =
+          currencies.firstWhere((item) => item.name == 'KGS').exchangeRate;
+    });
   }
-  // fetchCurrencyRates
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Currency Converter'),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          title: const Text('Курс Валют'),
+          backgroundColor: Colors.deepPurple,
+          centerTitle: true,
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(50.0),
         child: Column(
+          spacing: 25,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              'Введите сумму для конвертации:',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.deepPurple[700],
+              ),
+            ),
             TextField(
               controller: amountController,
               decoration: const InputDecoration(
-                labelText: 'Amount',
+                labelText: 'Сумма',
                 border: OutlineInputBorder(),
+                suffixText: 'KGS',
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 10, horizontal: 12),
               ),
               keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+              ],
             ),
-            const SizedBox(height: 16),
-            DropdownButton<String>(
+            SizedBox(height: 20),
+            Text(
+              'Выберите валюту для конвертации:',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.deepPurple[700],
+              ),
+            ),
+            DropdownButton<Currency>(
               isExpanded: true,
-              items: currencies.map((String currency) {
-                return DropdownMenuItem<String>(
+              value: choosedCurrency,
+              items: currencies.map((Currency currency) {
+                return DropdownMenuItem<Currency>(
                   value: currency,
-                  child: Text(currency),
+                  child: Text(currency.name),
                 );
               }).toList(),
-              onChanged: (String? selectedCurrency) {
+              onChanged: (Currency? selectedCurrency) {
                 setState(() {
                   choosedCurrency = selectedCurrency;
                 });
               },
-              hint: Text(choosedCurrency == null || choosedCurrency!.isEmpty ? 'Select Currency' : choosedCurrency!),
+              hint: Text('Выберите валюту'),
+              style: TextStyle(
+                color: Colors.deepPurple[600],
+                fontWeight: FontWeight.bold,
+              ),
+              dropdownColor: Colors.deepPurple[50],
             ),
+            SizedBox(height: 30),
+            if (choosedCurrency != null && amountController.text.isNotEmpty)
+              Text(
+                'Результат: ${(double.parse(amountController.text) * kgsRate / choosedCurrency!.exchangeRate).toStringAsFixed(2)} ${choosedCurrency!.name}',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple[700],
+                  letterSpacing: 2,
+                ),
+              ),
+            if (choosedCurrency == null && amountController.text.isNotEmpty)
+              Text(
+                'Пожалуйста, выберите валюту для конвертации.',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
           ],
         ),
       ),

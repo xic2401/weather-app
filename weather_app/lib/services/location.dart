@@ -19,9 +19,11 @@ class LocationService {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Разрешение на доступ к геолокации навсегда отклонено');
+      return Future.error(
+          'Разрешение на доступ к геолокации навсегда отклонено');
     }
 
-    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
   }
 }
