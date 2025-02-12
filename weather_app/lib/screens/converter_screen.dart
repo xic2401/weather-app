@@ -83,7 +83,7 @@ class ConverterScreenState extends State<ConverterScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.deepPurple[700],
+                color: const Color.fromARGB(255, 56, 105, 78),
               ),
             ),
             DropdownButton<Currency>(
@@ -123,7 +123,7 @@ class ConverterScreenState extends State<ConverterScreen> {
                 'Пожалуйста, выберите валюту для конвертации.',
                 style: TextStyle(
                   fontSize: 18,
-                  color: Colors.redAccent,
+                  color: const Color.fromARGB(255, 233, 31, 31),
                   fontWeight: FontWeight.bold,
                 ),
               ),
