@@ -4,9 +4,9 @@ import '../models/weather.dart';
 
 class WeatherService {
   Future<WeatherModel> fetchWeather(double latitude, double longitude) async {
-    Map<String, String> headers = {'X-Gismeteo-Token': '56b30cb255.3443075'};
-    final url = 'https://api.gismeteo.net/v2/weather/current/?latitude=$latitude&longitude=$longitude';
-
+    final apiKey = 'fe059762-caaa-4b45-9a08-0f56bf5ff714';
+    final url =
+        'https://api.weather.yandex.ru/v2/forecast?lat=52.37125&lon=4.89388';
     final response = await http.get(Uri.parse(url), headers: headers);
 
     if (response.statusCode == 200) {
